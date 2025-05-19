@@ -1,9 +1,11 @@
 package haida.houssam.backendexam.entities;
 
+import haida.houssam.backendexam.enums.TypeBien;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @DiscriminatorValue("IMMOBILIER")
 @Data
@@ -11,5 +13,5 @@ import lombok.*;
 @AllArgsConstructor
 public class CreditImmobilier extends Credit {
 
-    private String typeBien; // Exemple : Appartement, Maison, Local Commercial
+    private TypeBien typeBien; // Exemple : Appartement, Maison, Local Commercial
 }

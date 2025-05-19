@@ -26,17 +26,16 @@ public class RemboursementServiceImpl implements RemboursementService {
         this.dtoMapper = dtoMapper;
     }
 
-//    @Override
-//    public RemboursementDTO createRemboursement(RemboursementDTO dto) {
-//        Credit credit = creditRepository.findById(dto.getCreditId())
-//                .orElseThrow(() -> new IllegalArgumentException("Crédit non trouvé"));
-//
-//        Remboursement remboursement = dtoMapper.toRemboursement(dto);
-//        remboursement.setCredit(credit);
-//
-//        Remboursement saved = remboursementRepository.save(remboursement);
-//        return dtoMapper.toRemboursementDTO(saved);
-//    }
+    @Override
+    public RemboursementDTO createRemboursement(RemboursementDTO dto) {
+        Credit credit = creditRepository.findById(dto.getCreditId())
+                .orElseThrow(() -> new IllegalArgumentException("Crédit non trouvé"));
+
+        Remboursement remboursement = dtoMapper.toRemboursement(dto,credit);
+
+        Remboursement saved = remboursementRepository.save(remboursement);
+        return dtoMapper.toRemboursementDTO(saved);
+    }
 
     @Override
     public RemboursementDTO getRemboursementById(Long id) {

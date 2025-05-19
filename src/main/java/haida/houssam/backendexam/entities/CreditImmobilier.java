@@ -13,5 +13,5 @@ import lombok.*;
 @AllArgsConstructor
 public class CreditImmobilier extends Credit {
 
-    private TypeBien typeBien; // Exemple : Appartement, Maison, Local Commercial
+    private TypeBien typeBien;
 }

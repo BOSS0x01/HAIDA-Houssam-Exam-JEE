@@ -1,4 +1,4 @@
-package boss.team.backendexam;
+package haida.houssam.backendexam;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

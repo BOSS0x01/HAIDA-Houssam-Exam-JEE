@@ -6,7 +6,6 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("PERSONNEL")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

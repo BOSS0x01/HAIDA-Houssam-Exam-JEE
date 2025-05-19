@@ -1,9 +1,6 @@
 package haida.houssam.backendexam;
 
-import haida.houssam.backendexam.dtos.ClientDTO;
-import haida.houssam.backendexam.dtos.CreditDTO;
-import haida.houssam.backendexam.dtos.CreditImmobilierDTO;
-import haida.houssam.backendexam.dtos.RemboursementDTO;
+import haida.houssam.backendexam.dtos.*;
 import haida.houssam.backendexam.enums.*;
 import haida.houssam.backendexam.services.ClientService;
 import haida.houssam.backendexam.services.CreditService;
@@ -14,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.stream.Stream;
 
 @SpringBootApplication
@@ -26,37 +24,69 @@ public class Main {
 
 
     @Bean
-    CommandLineRunner commandLineRunner(ClientService clientService,
-                                        CreditService creditService,
-                                        RemboursementService remboursementService) {
+    CommandLineRunner testAllEntities(ClientService clientService,
+                                      CreditService creditService,
+                                      RemboursementService remboursementService) {
         return args -> {
 
-            Stream.of("Hassan", "Karima", "Jamal").forEach(nom -> {
+            Stream.of("Wafae", "Houssam", "Imran").forEach(nom -> {
+                // Create client
                 ClientDTO client = new ClientDTO();
                 client.setNom(nom);
                 client.setEmail(nom.toLowerCase() + "@gmail.com");
                 ClientDTO savedClient = clientService.createClient(client);
+                System.out.println("Client créé: " + savedClient.getNom());
 
-                CreditImmobilierDTO credit = new CreditImmobilierDTO();
-                credit.setClientId(savedClient.getId());
-                credit.setDateDemande(LocalDate.now());
-                credit.setDateAcceptation(LocalDate.now().plusDays(1));
-                credit.setMontant(100_000.0 + Math.random() * 50_000);
-                credit.setDureeRemboursementMois(180);
-                credit.setTauxInteret(3.5);
-                credit.setStatut(StatutCredit.ACCEPTE);
-                credit.setTypeBien(TypeBien.MAISON);
+                // 1. Crédit Personnel
+                CreditPersonnelDTO creditPersonnel = new CreditPersonnelDTO();
+                creditPersonnel.setClientId(savedClient.getId());
+                creditPersonnel.setDateDemande(LocalDate.now());
+                creditPersonnel.setDateAcceptation(LocalDate.now().plusDays(1));
+                creditPersonnel.setMontant(15000.0);
+                creditPersonnel.setDureeRemboursementMois(36);
+                creditPersonnel.setTauxInteret(4.2);
+                creditPersonnel.setStatut(StatutCredit.ACCEPTE);
+                creditPersonnel.setMotif("Travaux maison");
+                CreditDTO savedPersonnel = creditService.createCredit(creditPersonnel);
 
-                CreditDTO savedCredit = creditService.createCredit(credit);
+                // 2. Crédit Immobilier
+                CreditImmobilierDTO creditImmobilier = new CreditImmobilierDTO();
+                creditImmobilier.setClientId(savedClient.getId());
+                creditImmobilier.setDateDemande(LocalDate.now());
+                creditImmobilier.setDateAcceptation(LocalDate.now().plusDays(2));
+                creditImmobilier.setMontant(120000.0);
+                creditImmobilier.setDureeRemboursementMois(240);
+                creditImmobilier.setTauxInteret(2.8);
+                creditImmobilier.setStatut(StatutCredit.ACCEPTE);
+                creditImmobilier.setTypeBien(TypeBien.APPARTEMENT);
+                CreditDTO savedImmobilier = creditService.createCredit(creditImmobilier);
 
-                for (int i = 1; i <= 3; i++) {
-                    RemboursementDTO r = new RemboursementDTO();
-                    r.setCreditId(savedCredit.getId());
-                    r.setDate(LocalDate.now().plusMonths(i));
-                    r.setMontant(2000.0 + Math.random() * 1000);
-                    r.setType(TypeRemboursement.MENSUALITE);
-                    remboursementService.createRemboursement(r);
+                // 3. Crédit Professionnel
+                CreditProfessionnelDTO creditPro = new CreditProfessionnelDTO();
+                creditPro.setClientId(savedClient.getId());
+                creditPro.setDateDemande(LocalDate.now());
+                creditPro.setDateAcceptation(LocalDate.now().plusDays(3));
+                creditPro.setMontant(50000.0);
+                creditPro.setDureeRemboursementMois(60);
+                creditPro.setTauxInteret(3.9);
+                creditPro.setStatut(StatutCredit.ACCEPTE);
+                creditPro.setMotif("Achat équipements");
+                creditPro.setRaisonSociale("Société " + nom.toUpperCase());
+                CreditDTO savedPro = creditService.createCredit(creditPro);
+
+                // Remboursements pour chaque crédit
+                List<CreditDTO> allCredits = List.of(savedPersonnel, savedImmobilier, savedPro);
+                for (CreditDTO credit : allCredits) {
+                    for (int i = 1; i <= 2; i++) {
+                        RemboursementDTO remboursement = new RemboursementDTO();
+                        remboursement.setCreditId(credit.getId());
+                        remboursement.setDate(LocalDate.now().plusMonths(i));
+                        remboursement.setMontant(1000.0 + Math.random() * 500);
+                        remboursement.setType(i % 2 == 0 ? TypeRemboursement.MENSUALITE : TypeRemboursement.REMBOURSEMENT_ANTICIPE);
+                        remboursementService.createRemboursement(remboursement);
+                    }
                 }
+
             });
 
         };

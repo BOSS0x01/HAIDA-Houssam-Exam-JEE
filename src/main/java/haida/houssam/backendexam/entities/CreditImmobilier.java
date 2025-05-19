@@ -7,7 +7,6 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("IMMOBILIER")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

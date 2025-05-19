@@ -6,7 +6,6 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("PROFESSIONNEL")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

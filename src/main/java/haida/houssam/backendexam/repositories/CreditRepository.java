@@ -1,4 +1,10 @@
 package haida.houssam.backendexam.repositories;
 
-public interface CreditRepository {
+import haida.houssam.backendexam.entities.Credit;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+public interface CreditRepository extends JpaRepository<Credit, Long> {
+
+
 }
